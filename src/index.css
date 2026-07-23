@@ -1,0 +1,65 @@
+@import 'tailwindcss';
+
+/* Design tokens — exposed to Tailwind as utilities: bg-surface, text-muted, border-line, … */
+@theme {
+  --color-text: #1f2328;
+  --color-muted: #6b7280;
+  --color-bg: #ffffff;
+  --color-surface: #fafafa;
+  --color-line: #e4e4e7;
+  --color-hover: #f0f0f2;
+  --color-accent: #6d4aff;
+  --color-code-bg: #f4f4f5;
+
+  --font-sans: system-ui, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: ui-monospace, Consolas, monospace;
+}
+
+/* Same tokens, dark palette. Utilities read the vars, so every colour flips at once. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-text: #e6e6e9;
+    --color-muted: #9295a1;
+    --color-bg: #121317;
+    --color-surface: #17181d;
+    --color-line: #2a2c33;
+    --color-hover: #23252c;
+    --color-accent: #8b6dff;
+    --color-code-bg: #1e2027;
+  }
+}
+
+@layer base {
+  :root {
+    font: 15px/1.5 var(--font-sans);
+    color-scheme: light dark;
+    color: var(--color-text);
+    background: var(--color-bg);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1 {
+    @apply mb-3 text-2xl leading-tight font-semibold;
+  }
+  h2 {
+    @apply mb-3 text-lg leading-tight font-semibold;
+  }
+  h3 {
+    @apply mb-3 text-[15px] leading-tight font-semibold;
+  }
+  p {
+    @apply mb-3;
+  }
+
+  button,
+  input,
+  select,
+  textarea {
+    font: inherit;
+  }
+
+  code {
+    @apply bg-code-bg rounded font-mono text-[0.9em];
+    padding: 2px 5px;
+  }
+}
