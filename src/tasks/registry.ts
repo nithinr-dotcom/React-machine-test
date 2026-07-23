@@ -1,6 +1,7 @@
 import Learning from "./00-learning";
 import Counter from "./01-counter";
 import Todo from "./02-todo";
+import Accordion from "./03-accordion";
 import type { Task } from "./types";
 
 // Add one entry per task as you finish it, e.g.
@@ -20,5 +21,13 @@ export const tasks: Task[] = [
     level: 1,
     Component: Counter,
   },
+
   { id: "02", title: "Todo list", level: 1, Component: Todo },
+
+  {
+    id: "03",
+    title: "Accordion",
+    level: 1,
+    Component: Accordion,
+  },
 ];

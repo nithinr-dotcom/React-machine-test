@@ -1,72 +1,100 @@
-import { useState, type ChangeEvent, type SubmitEvent } from "react";
-interface Todo {
+import { useState, type ChangeEvent } from "react";
+
+interface Items {
   id: string;
-  task: string;
-  completed: boolean;
+  title: string;
+  body: string;
 }
-const FILTER = ["all", "done", "active"] as const;
+const LIST_ITEMS: Items[] = [
+  {
+    id: crypto.randomUUID(),
+    title: "Title one",
+    body: "Title one description",
+  },
+  {
+    id: crypto.randomUUID(),
+    title: "Title two",
+    body: "Title two description",
+  },
+  {
+    id: crypto.randomUUID(),
+    title: "Title three",
+    body: "Title three description",
+  },
+  {
+    id: crypto.randomUUID(),
+    title: "Title four",
+    body: "Title four description",
+  },
+];
 
-type Filter = (typeof FILTER)[number];
-
-const matches = (todo: Todo, filter: Filter) =>
-  filter === "all" || (filter === "done" ? todo.completed : !todo.completed);
+type MODE = "single" | "multiple";
+type AccordionProps = {
+  title: string;
+  body: string;
+  isOpen: boolean;
+  toggleHandler: () => void;
+  id: string;
+};
+const Accordion = ({ title, body, isOpen, toggleHandler }: AccordionProps) => {
+  return (
+    <div className="flex flex-col">
+      <div className="flex gap-5" onClick={toggleHandler}>
+        <div>{title}</div>{" "}
+        {isOpen ? <div>arrow down</div> : <div>arrow up</div>}
+      </div>
+      {isOpen && <div>{body}</div>}
+    </div>
+  );
+};
 export default function Learning() {
-  const [text, setText] = useState("");
-  const [todos, setTodos] = useState<Todo[]>([]);
-  const [filter, setFilter] = useState<Filter>("all");
-  //text change handler
-  const changeText = (e: ChangeEvent<HTMLInputElement>) => {
-    setText(e.target.value);
+  const [mode, setMode] = useState<MODE>("single");
+  const [activeIds, setActiveIds] = useState(new Set());
+  //mode change handler
+  const changeMode = (mode: MODE) => {
+    setMode(mode);
+    if (mode === "single") {
+      setActiveIds((prev) => {
+        const first = prev.values().next().value;
+        return first === undefined ? new Set() : new Set([first]);
+      });
+    }
   };
-  //add todo handler
-  const addTodo = (e: SubmitEvent) => {
-    e.preventDefault();
-    if (text.trim() === "") return;
-    setTodos((prev) => [
-      ...prev,
-      { id: crypto.randomUUID(), task: text, completed: false },
-    ]);
-    setText("");
+  const toggleHandler = (id: string) => {
+    setActiveIds((prev) => {
+      const isOpen = activeIds.has(id);
+      if (isOpen) {
+        const next = new Set(prev);
+        next.delete(id);
+        return next;
+      }
+      return mode === "single" ? new Set([id]) : new Set(prev).add(id);
+    });
   };
-  //change filter handler
-  const changeFilter = (e: ChangeEvent<HTMLSelectElement>) => {
-    setFilter(e.target.value as Filter);
-  };
-  const visible = todos.filter((todo) => matches(todo, filter));
-  //delete handler
-  const deleteHandler = (id: string) =>
-    setTodos(todos.filter((v) => v.id !== id));
-  //toggle handler
-  const toggleHandler = (id: string) =>
-    setTodos((prev) =>
-      prev.map((v) => (v.id === id ? { ...v, completed: !v.completed } : v)),
-    );
-
-  console.log({ todos });
   return (
     <div>
-      <form onSubmit={addTodo}>
-        <input type="text" value={text} onChange={changeText} />
-        <button>Add Todo</button>
-      </form>
       <div>
-        <select onChange={changeFilter} value={filter}>
-          {FILTER.map((val) => (
-            <option key={val}>{val}</option>
-          ))}
-        </select>
+        <label>
+          <input
+            type="checkbox"
+            checked={mode === "multiple"}
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              changeMode(e.target.checked ? "multiple" : "single")
+            }
+          />
+          Allow multiple
+        </label>
       </div>
       <div>
-        {visible.map((val) => (
-          <div key={val.id} className="flex gap-5 border justify-between">
-            <div>{val.task}</div>
-            <input
-              type="checkbox"
-              checked={val.completed}
-              onChange={() => toggleHandler(val.id)}
-            />
-            <button onClick={() => deleteHandler(val.id)}>Delete</button>
-          </div>
+        {LIST_ITEMS.map((v) => (
+          <Accordion
+            title={v.title}
+            body={v.body}
+            key={v.id}
+            toggleHandler={() => toggleHandler(v.id)}
+            isOpen={activeIds.has(v.id)}
+            id={v.id}
+          />
         ))}
       </div>
     </div>
