@@ -2,6 +2,7 @@ import Learning from "./00-learning";
 import Counter from "./01-counter";
 import Todo from "./02-todo";
 import Accordion from "./03-accordion";
+import AsyncSearch from "./04-async-search";
 import type { Task } from "./types";
 
 // Add one entry per task as you finish it, e.g.
@@ -29,5 +30,11 @@ export const tasks: Task[] = [
     title: "Accordion",
     level: 1,
     Component: Accordion,
+  },
+  {
+    id: "04",
+    title: "Async search (typeahead)",
+    level: 2,
+    Component: AsyncSearch,
   },
 ];
