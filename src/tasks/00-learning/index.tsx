@@ -1,56 +1,50 @@
-import { useEffect, useState, type ChangeEvent } from "react";
-type Pokemon = {
+import { useState, type ChangeEvent } from "react";
+interface User {
   name: string;
-  height: number;
-};
-interface Result {
-  query: string;
-  kind: "loading" | "error" | "idle" | "notFound" | "found";
-  pokemon: Pokemon | null;
+  email: string;
+  password: string;
+  confirmPassword: string;
 }
 export default function Learning() {
-  const [search, setSearch] = useState("");
-  const [result, setResult] = useState<Result | null>(null);
-
-  const query = search.trim();
-  const status = !query
-    ? "idle"
-    : result?.query === query
-      ? result.kind
-      : "loading";
-  const changeSearch = (e: ChangeEvent<HTMLInputElement>) => {
-    setSearch(e.target.value);
+  const [data, setData] = useState<User | null>(null);
+  //change handler
+  const changeHandler = (e: ChangeEvent<HTMLInputElement>) => {
+    setData((prev) => ({ [e.target.name]: e.target.value, ...prev }));
   };
-  useEffect(() => {
-    if (!query) return;
-    const controller = new AbortController();
-    const timeout = setTimeout(async () => {
-      const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${query}`, {
-        signal: controller.signal,
-      });
-      setResult(
-        res.ok
-          ? { query, kind: "found", pokemon: await res.json() }
-          : { query, kind: "notFound", pokemon: null },
-      );
-    }, 300);
-
-    return () => {
-      clearTimeout(timeout);
-      controller.abort();
-    };
-  }, [query]);
   return (
     <div>
-      {status === "loading" && <div>loading...</div>}
-      {status === "notFound" && <div>not found</div>}
-      {status === "error" && <div>something went wrong</div>}
-      {status === "found" && result?.pokemon && (
-        <div>{result.pokemon.name}</div>
-      )}
-      <div>
-        <input type="text" value={search} onChange={changeSearch} />
-      </div>
+      <label>
+        <input
+          onChange={changeHandler}
+          name="name"
+          type="text"
+          value={data?.name}
+        />
+      </label>
+      <label>
+        <input
+          onChange={changeHandler}
+          name="email"
+          type="text"
+          value={data?.email}
+        />
+      </label>
+      <label>
+        <input
+          onChange={changeHandler}
+          name="password"
+          type="text"
+          value={data?.password}
+        />
+      </label>
+      <label>
+        <input
+          onChange={changeHandler}
+          name="confirmPassword"
+          type="text"
+          value={data?.confirmPassword}
+        />
+      </label>
     </div>
   );
 }
