@@ -3,6 +3,7 @@ import Counter from "./01-counter";
 import Todo from "./02-todo";
 import Accordion from "./03-accordion";
 import AsyncSearch from "./04-async-search";
+import FormValidation from "./05-form-validation";
 import type { Task } from "./types";
 
 // Add one entry per task as you finish it, e.g.
@@ -36,5 +37,11 @@ export const tasks: Task[] = [
     title: "Async search (typeahead)",
     level: 2,
     Component: AsyncSearch,
+  },
+  {
+    id: "05",
+    title: "Sign-up form with validation",
+    level: 2,
+    Component: FormValidation,
   },
 ];
